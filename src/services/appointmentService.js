@@ -9,8 +9,8 @@ export const appointmentService = {
       .from('appointments')
       .select(`
         *,
-        pets (name, type),
-        doctor:profiles!doctor_id (full_name)
+        pets(name, type, breed, age, image_url),
+        doctor:profiles!appointments_doctor_id_fkey(full_name)
       `)
       .eq('owner_id', user.id)
       .order('date', { ascending: false });
@@ -72,7 +72,7 @@ export const appointmentService = {
       .select(`
         *,
         pets(name, type, breed, age, image_url),
-        owner:profiles!owner_id(full_name, phone)
+        owner:profiles!appointments_owner_id_fkey(full_name)
       `)
       .eq('doctor_id', vetId)
       .order('date', { ascending: false });

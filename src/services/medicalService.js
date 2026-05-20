@@ -42,7 +42,7 @@ export const medicalService = {
       .from('appointments')
       .select(`
         *,
-        doctor:profiles!doctor_id(full_name)
+        doctor:profiles!appointments_doctor_id_fkey(full_name)
       `)
       .eq('pet_id', petId)
       .order('date', { ascending: false });

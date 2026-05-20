@@ -34,10 +34,6 @@ const UserDashboard = () => {
           <h1 className="dashboard-title">{t('dashboard.title')}</h1>
           <p className="dashboard-subtitle">{t('dashboard.subtitle')}</p>
         </div>
-        <button className="btn-primary flex items-center gap-2" onClick={() => setIsModalOpen(true)}>
-          <Plus size={18} />
-          <span>{t('dashboard.create_request')}</span>
-        </button>
       </div>
 
       {/* Stats Grid */}
@@ -120,12 +116,15 @@ const UserDashboard = () => {
             )}
           </div>
           
-          <button 
-            className="w-full mt-4 btn-primary-alt"
-            onClick={() => setIsModalOpen(true)}
-          >
-            {t('dashboard.create_request')}
-          </button>
+          <div className="flex justify-center mt-5">
+            <button 
+              className="flex items-center gap-2 px-5 py-2 rounded-full bg-emerald-50 text-emerald-600 font-semibold hover:bg-emerald-100 hover:shadow-sm transition-all text-sm group"
+              onClick={() => setIsModalOpen(true)}
+            >
+              <Plus size={16} className="group-hover:scale-110 transition-transform" />
+              {t('dashboard.create_request')}
+            </button>
+          </div>
         </div>
       </div>
 

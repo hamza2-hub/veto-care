@@ -127,151 +127,175 @@ const BookingModal = ({ isOpen, onClose, onBookingSuccess }) => {
 
   return (
     <AnimatePresence mode="wait">
-      <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
+      <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 sm:p-6">
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={handleClose}
-          className="absolute inset-0 bg-zinc-900/60 backdrop-blur-sm"
+          className="absolute inset-0 bg-zinc-900/40 backdrop-blur-sm"
         />
         
         <motion.div 
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col"
+          className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col"
+          style={{ maxHeight: 'calc(100vh - 2rem)' }}
         >
           {/* Header */}
-          <div className="p-6 border-b border-zinc-100 flex justify-between items-center bg-emerald-50/50 shrink-0">
-            <div>
-              <h2 className="text-xl font-bold text-zinc-900">{t('booking.title')}</h2>
-              <p className="text-sm text-zinc-500">{t('booking.subtitle')}</p>
+          <div className="px-6 py-5 border-b border-zinc-100 flex justify-between items-start bg-white shrink-0 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-400 to-teal-500"></div>
+            <div className="mt-1">
+              <h2 className="text-2xl font-extrabold text-zinc-900 tracking-tight">{t('booking.title')}</h2>
+              <p className="text-sm text-zinc-500 font-medium mt-1">{t('booking.subtitle')}</p>
             </div>
-            <button onClick={handleClose} className="p-2 hover:bg-white rounded-full transition-colors text-zinc-400">
+            <button onClick={handleClose} className="p-2 bg-zinc-50 hover:bg-zinc-100 rounded-full transition-colors text-zinc-500 mt-1">
               <X size={20} />
             </button>
           </div>
 
           {/* Form Content */}
-          <div className="flex-1 overflow-y-auto custom-scrollbar">
-            <form onSubmit={handleSubmit} className="p-6 space-y-5">
+          <div className="flex-1 overflow-y-auto custom-scrollbar relative">
+            <form onSubmit={handleSubmit} className="p-6 space-y-6">
               {isLoading ? (
-                <div className="py-12 flex flex-col items-center justify-center gap-3">
-                  <Loader2 className="animate-spin text-emerald-600" size={32} />
-                  <p className="text-zinc-500 font-medium">Loading details...</p>
+                <div className="py-16 flex flex-col items-center justify-center gap-4">
+                  <Loader2 className="animate-spin text-emerald-500" size={36} />
+                  <p className="text-zinc-500 font-medium">Preparing booking form...</p>
                 </div>
               ) : (
                 <>
                   {/* Pet Selection */}
-                  <div className="space-y-2">
-                    <label className="text-sm font-bold text-zinc-700 flex items-center gap-2">
-                      <span className="size-4 bg-emerald-600 rounded-full flex items-center justify-center text-[10px] text-white">P</span> {t('booking.form.select_pet')} *
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-semibold text-zinc-700 ml-1 flex items-center justify-between">
+                      <span>{t('booking.form.select_pet')} <span className="text-emerald-500">*</span></span>
                     </label>
-                    <select 
-                      required
-                      value={formData.pet_id}
-                      onChange={(e) => setFormData({...formData, pet_id: e.target.value})}
-                      className="w-full px-4 py-3 rounded-xl border border-zinc-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all outline-none bg-zinc-50/50"
-                    >
-                      <option value="">{t('booking.form.select_pet')}</option>
-                      {pets.map(pet => (
-                        <option key={pet.id} value={pet.id}>{pet.name} ({pet.type})</option>
-                      ))}
-                    </select>
+                    <div className="relative group">
+                      <select 
+                        required
+                        value={formData.pet_id}
+                        onChange={(e) => setFormData({...formData, pet_id: e.target.value})}
+                        className="w-full pl-11 pr-10 py-3 rounded-xl border border-zinc-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all outline-none bg-white shadow-sm appearance-none hover:border-zinc-300 cursor-pointer font-medium text-zinc-800"
+                      >
+                        <option value="" disabled>{t('booking.form.select_pet')}</option>
+                        {pets.map(pet => (
+                          <option key={pet.id} value={pet.id}>{pet.name} ({pet.type})</option>
+                        ))}
+                      </select>
+                      <div className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none">
+                        <span className="flex items-center justify-center w-5 h-5 rounded-full bg-emerald-100 text-emerald-600 text-[10px] font-bold">P</span>
+                      </div>
+                      <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-400 group-hover:text-zinc-600">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                      </div>
+                    </div>
                   </div>
 
                   {/* Doctor Selection */}
-                  <div className="space-y-2">
-                    <label className="text-sm font-bold text-zinc-700 flex items-center gap-2">
-                      <User size={16} className="text-emerald-600" /> {t('booking.form.select_doctor')}
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-semibold text-zinc-700 ml-1">
+                      {t('booking.form.select_doctor')} <span className="text-zinc-400 font-normal">(Optional)</span>
                     </label>
-                    <select 
-                      value={formData.doctor_id}
-                      onChange={(e) => setFormData({...formData, doctor_id: e.target.value})}
-                      className="w-full px-4 py-3 rounded-xl border border-zinc-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all outline-none bg-zinc-50/50"
-                    >
-                      <option value="">Any Available Doctor</option>
-                      {doctors.map(doc => (
-                        <option key={doc.id} value={doc.id}>Dr. {doc.full_name}</option>
-                      ))}
-                    </select>
+                    <div className="relative group">
+                      <select 
+                        value={formData.doctor_id}
+                        onChange={(e) => setFormData({...formData, doctor_id: e.target.value})}
+                        className="w-full pl-11 pr-10 py-3 rounded-xl border border-zinc-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all outline-none bg-white shadow-sm appearance-none hover:border-zinc-300 cursor-pointer font-medium text-zinc-800"
+                      >
+                        <option value="">Any Available Doctor</option>
+                        {doctors.map(doc => (
+                          <option key={doc.id} value={doc.id}>Dr. {doc.full_name}</option>
+                        ))}
+                      </select>
+                      <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" />
+                      <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-zinc-400 group-hover:text-zinc-600">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                      </div>
+                    </div>
                   </div>
 
                   {/* Date/Time */}
-                  <div className="space-y-2">
-                    <label className="text-sm font-bold text-zinc-700 flex items-center gap-2">
-                      <Calendar size={16} className="text-emerald-600" /> {t('booking.form.date')} *
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-semibold text-zinc-700 ml-1">
+                      {t('booking.form.date')} <span className="text-emerald-500">*</span>
                     </label>
-                    <input 
-                      type="datetime-local"
-                      required
-                      min={new Date().toISOString().slice(0, 16)}
-                      value={formData.date}
-                      onChange={(e) => setFormData({...formData, date: e.target.value})}
-                      className="w-full px-4 py-3 rounded-xl border border-zinc-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all outline-none bg-zinc-50/50"
-                    />
+                    <div className="relative">
+                      <input 
+                        type="datetime-local"
+                        required
+                        min={new Date().toISOString().slice(0, 16)}
+                        value={formData.date}
+                        onChange={(e) => setFormData({...formData, date: e.target.value})}
+                        className="w-full pl-11 pr-4 py-3 rounded-xl border border-zinc-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all outline-none bg-white shadow-sm hover:border-zinc-300 font-medium text-zinc-800"
+                      />
+                      <Calendar size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" />
+                    </div>
+                  </div>
+
+                  {/* Reason/Notes */}
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-semibold text-zinc-700 ml-1">
+                      {t('booking.form.reason')}
+                    </label>
+                    <div className="relative">
+                      <textarea 
+                        rows={3}
+                        placeholder={t('booking.form.reason_placeholder') || "Describe the symptoms or reason for your visit..."}
+                        value={formData.notes}
+                        onChange={(e) => setFormData({...formData, notes: e.target.value})}
+                        className="w-full pl-11 pr-4 py-3 rounded-xl border border-zinc-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all outline-none bg-white shadow-sm resize-none hover:border-zinc-300 font-medium text-zinc-800"
+                      />
+                      <MessageSquare size={18} className="absolute left-4 top-3.5 text-zinc-400 pointer-events-none" />
+                    </div>
                   </div>
 
                   {/* File Attachment */}
-                  <div className="space-y-2">
-                    <label className="text-sm font-bold text-zinc-700 flex items-center gap-2">
-                      <Paperclip size={16} className="text-emerald-600" />
-                      Attach Medical Records or Images
+                  <div className="space-y-2 pt-1 border-t border-zinc-100">
+                    <label className="text-sm font-semibold text-zinc-700 ml-1 mt-2 block">
+                      Attach Medical Records or Images <span className="text-zinc-400 font-normal">(Optional)</span>
                     </label>
                     <FileAttachZone 
                       files={attachedFiles}
                       onAdd={(newFiles) => setAttachedFiles(prev => [...prev, ...newFiles])}
                       onRemove={(index) => setAttachedFiles(prev => prev.filter((_, i) => i !== index))}
                     />
-                    <p className="text-[10px] text-zinc-400">PDF, JPG, PNG or DOC — Max 10MB each</p>
+                    <p className="text-[11px] text-zinc-500 ml-1">PDF, JPG, PNG or DOC — Max 10MB each</p>
                   </div>
-
-                  {/* Reason/Notes */}
-                  <div className="space-y-2">
-                    <label className="text-sm font-bold text-zinc-700 flex items-center gap-2">
-                      <MessageSquare size={16} className="text-emerald-600" /> {t('booking.form.reason')}
-                    </label>
-                    <textarea 
-                      rows={3}
-                      placeholder={t('booking.form.reason_placeholder')}
-                      value={formData.notes}
-                      onChange={(e) => setFormData({...formData, notes: e.target.value})}
-                      className="w-full px-4 py-3 rounded-xl border border-zinc-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all outline-none bg-zinc-50/50 resize-none"
-                    />
-                  </div>
-
 
                   {/* Progress Indicator */}
                   {uploadProgress && (
-                    <div className="flex items-center gap-2 text-xs text-emerald-600 bg-emerald-50 px-4 py-2 rounded-lg border border-emerald-100">
-                      <Loader2 size={14} className="animate-spin" />
+                    <div className="flex items-center justify-center gap-2 text-sm font-medium text-emerald-600 bg-emerald-50 px-4 py-3 rounded-xl border border-emerald-100 animate-pulse">
+                      <Loader2 size={16} className="animate-spin" />
                       {uploadProgress}
                     </div>
                   )}
-
-                  {/* Actions */}
-                  <div className="pt-4 flex gap-3 sticky bottom-0 bg-white pb-2 mt-auto">
-                    <Button 
-                      type="button" 
-                      variant="secondary" 
-                      className="flex-1"
-                      onClick={handleClose}
-                    >
-                      {t('booking.form.cancel')}
-                    </Button>
-                    <Button 
-                      type="submit" 
-                      className="flex-[2]"
-                      isLoading={isSubmitting}
-                    >
-                      {t('booking.form.book')}
-                    </Button>
-                  </div>
                 </>
               )}
             </form>
           </div>
+          
+          {/* Actions - Sticky at bottom */}
+          {!isLoading && (
+            <div className="p-6 bg-zinc-50 border-t border-zinc-100 shrink-0 flex gap-3">
+              <Button 
+                type="button" 
+                variant="outline" 
+                className="flex-1 font-semibold"
+                onClick={handleClose}
+                disabled={isSubmitting}
+              >
+                {t('booking.form.cancel')}
+              </Button>
+              <Button 
+                type="button" 
+                onClick={handleSubmit}
+                className="flex-[2] font-semibold shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-shadow"
+                isLoading={isSubmitting}
+              >
+                {t('booking.form.book')}
+              </Button>
+            </div>
+          )}
         </motion.div>
       </div>
     </AnimatePresence>
