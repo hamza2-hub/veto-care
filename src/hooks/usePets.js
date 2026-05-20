@@ -1,23 +1,23 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
+import { useAuth } from './useAuth';
 
 export const usePets = () => {
+  const { user } = useAuth();
   const [pets, setPets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const fetchPets = useCallback(async () => {
+    if (!user) {
+      setPets([]);
+      setLoading(false);
+      return;
+    }
+
     try {
       setLoading(true);
       setError(null);
-
-      // Refresh session to ensure auth token is current
-      await supabase.auth.refreshSession();
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        setPets([]);
-        return;
-      }
 
       const { data, error } = await supabase
         .from('pets')
@@ -33,19 +33,15 @@ export const usePets = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [user]);
 
   useEffect(() => {
-    fetchPets();
+    if (user) {
+      fetchPets();
 
-    // Setup realtime subscription for this user's pets
-    let channel;
-    const setupSubscription = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      channel = supabase
-        .channel('public:pets:user')
+      // Setup realtime subscription for this user's pets
+      const channel = supabase
+        .channel(`public:pets:user:${user.id}`)
         .on(
           'postgres_changes',
           {
@@ -66,16 +62,17 @@ export const usePets = () => {
           () => fetchPets()
         )
         .subscribe();
-    };
 
-    setupSubscription();
-
-    return () => {
-      if (channel) {
-        channel.unsubscribe();
-      }
-    };
-  }, [fetchPets]);
+      return () => {
+        if (channel) {
+          channel.unsubscribe();
+        }
+      };
+    } else {
+      setPets([]);
+      setLoading(false);
+    }
+  }, [user, fetchPets]);
 
   const removePetFromState = useCallback((petId) => {
     setPets(prev => prev.filter(p => p.id !== petId));

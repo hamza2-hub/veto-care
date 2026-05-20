@@ -1,9 +1,8 @@
 import { supabase } from '../lib/supabase';
 
 export const appointmentService = {
-  async getAppointments() {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
+  async getAppointments(userId) {
+    if (!userId) throw new Error('User ID is required');
 
     const { data, error } = await supabase
       .from('appointments')

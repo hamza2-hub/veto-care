@@ -29,7 +29,7 @@ const Vaccinations = () => {
 
   return (
     <div className="animate-fade-in">
-      <div className="dashboard-header flex justify-between items-center hide-mobile">
+      <div className="dashboard-header flex justify-between items-center">
         <div>
           <h1 className="dashboard-title">Vaccinations</h1>
           <p className="dashboard-subtitle">Track vaccination schedules for all registered pets</p>

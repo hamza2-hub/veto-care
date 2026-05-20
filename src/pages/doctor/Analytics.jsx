@@ -3,7 +3,7 @@ import React from 'react';
 const Analytics = () => {
   return (
     <div className="animate-fade-in">
-      <div className="dashboard-header flex justify-between items-center hide-mobile">
+      <div className="dashboard-header flex justify-between items-center">
         <div>
           <h1 className="dashboard-title">Analytics</h1>
           <p className="dashboard-subtitle">Clinic performance and statistics</p>

@@ -621,7 +621,7 @@ Pour toute question ou aide:
 
 <div align="center">
 
-**© 2024 Vetocare — La santé animale simplifiée.**
+**© 2026 Vetocare — La santé animale simplifiée.**
 
 [![GitHub stars](https://img.shields.io/github/stars/votre-username/vetocare?style=social)](https://github.com/votre-username/vetocare/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/votre-username/vetocare?style=social)](https://github.com/votre-username/vetocare/network)

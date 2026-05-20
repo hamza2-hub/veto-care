@@ -48,11 +48,6 @@ const Navbar = ({ toggleSidebar }) => {
     setIsNotificationsOpen(false);
   };
 
-  const toggleLanguage = () => {
-    const newLang = i18n.language === 'en' ? 'fr' : 'en';
-    i18n.changeLanguage(newLang);
-  };
-
   return (
     <header className="navbar flex items-center justify-between">
       <div className="navbar-left flex items-center gap-4">
@@ -71,17 +66,6 @@ const Navbar = ({ toggleSidebar }) => {
             <Plus size={18} /> {t('navbar.add_patient')}
           </Button>
         )}
-        
-        <button 
-          className="notification-btn hover-bg"
-          onClick={toggleLanguage}
-          title="Toggle Language / Changer de langue"
-        >
-          <Globe size={22} />
-          <span className="absolute -bottom-1 -right-1 text-[10px] font-bold bg-zinc-100 rounded-sm px-1 border border-zinc-200">
-            {i18n.language.toUpperCase()}
-          </span>
-        </button>
 
         <div className="relative" ref={notifDropdownRef}>
           <button 

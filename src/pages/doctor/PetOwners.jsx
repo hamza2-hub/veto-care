@@ -50,7 +50,7 @@ const PetOwners = () => {
 
   return (
     <div className="animate-fade-in">
-      <div className="dashboard-header flex justify-between items-center hide-mobile">
+      <div className="dashboard-header flex justify-between items-center">
         <div>
           <h1 className="dashboard-title">My Clients</h1>
           <p className="dashboard-subtitle">Manage your client information and contacts</p>

@@ -1,16 +1,24 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
 import { appointmentService } from '../services/appointmentService';
+import { useAuth } from './useAuth';
 
 export const useAppointments = () => {
+  const { user } = useAuth();
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchAppointments = async () => {
+  const fetchAppointments = useCallback(async () => {
+    if (!user) {
+      setAppointments([]);
+      setLoading(false);
+      return;
+    }
+
     try {
       setLoading(true);
-      const data = await appointmentService.getAppointments();
+      const data = await appointmentService.getAppointments(user.id);
       setAppointments(data);
       setError(null);
     } catch (err) {
@@ -19,14 +27,11 @@ export const useAppointments = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
 
   useEffect(() => {
-    fetchAppointments();
-
-    const fetchSessionAndSubscribe = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+    if (user) {
+      fetchAppointments();
 
       const subscription = supabase
         .channel(`appointments_user_${user.id}`)
@@ -47,13 +52,11 @@ export const useAppointments = () => {
       return () => {
         subscription.unsubscribe();
       };
-    };
-
-    const cleanup = fetchSessionAndSubscribe();
-    return () => {
-      cleanup.then(unsub => unsub && unsub());
-    };
-  }, []);
+    } else {
+      setAppointments([]);
+      setLoading(false);
+    }
+  }, [user, fetchAppointments]);
 
   return { appointments, loading, error, refetch: fetchAppointments };
 };

@@ -151,37 +151,44 @@ const DoctorModal = ({ doc, onClose, onBook }) => (
           onClick={e => e.stopPropagation()}
           style={{
             background: 'var(--surface)',
-            borderRadius: 'var(--border-radius-xl)',
+            borderRadius: 20,
             boxShadow: '0 40px 80px rgba(0,0,0,0.25)',
-            width: '100%', maxWidth: 700,
+            width: '100%', maxWidth: 520,
             maxHeight: '90vh', overflowY: 'auto',
             display: 'flex', flexDirection: 'column',
           }}
         >
-          {/* Cover + Avatar */}
-          <div style={{ position: 'relative', height: 120, background: 'linear-gradient(135deg, #10b981 0%, #34d399 50%, #6ee7b7 100%)', borderRadius: 'var(--border-radius-xl) var(--border-radius-xl) 0 0', flexShrink: 0 }}>
+          {/* Cover */}
+          <div style={{ position: 'relative', height: 140, background: 'linear-gradient(135deg, #10b981 0%, #34d399 50%, #6ee7b7 100%)', borderRadius: '20px 20px 0 0', flexShrink: 0 }}>
             <button onClick={onClose} style={{
               position: 'absolute', top: 12, right: 12,
-              background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: '50%',
+              background: 'rgba(255,255,255,0.25)', border: 'none', borderRadius: '50%',
               width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center',
               cursor: 'pointer', backdropFilter: 'blur(4px)', color: 'white',
               transition: 'background 0.2s',
             }}>
               <X size={18} />
             </button>
+
+            {/* Avatar positioned at bottom of cover */}
+            <div style={{ 
+              position: 'absolute', bottom: -40, left: '50%', transform: 'translateX(-50%)',
+              padding: 4, background: 'white', borderRadius: '50%', 
+              boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+            }}>
+              <Avatar url={doc.avatar_url} name={doc.full_name} size={80} />
+            </div>
           </div>
 
-          <div style={{ padding: '0 2rem 2rem' }}>
-            {/* Avatar overlapping cover */}
-            <div style={{ display: 'flex', alignItems: 'flex-end', gap: '1rem', marginTop: -44, marginBottom: '1.25rem' }}>
-              <div style={{ padding: 4, background: 'white', borderRadius: '50%', boxShadow: '0 4px 16px rgba(0,0,0,0.12)', flexShrink: 0 }}>
-                <Avatar url={doc.avatar_url} name={doc.full_name} size={80} />
-              </div>
-              <div style={{ paddingBottom: 4 }}>
-                <p style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-main)' }}>Dr. {doc.full_name}</p>
-                <p style={{ fontSize: '0.9rem', color: 'var(--primary)', fontWeight: 600 }}>{doc.specialty || 'General Veterinarian'}</p>
-              </div>
-            </div>
+          {/* Content */}
+          <div style={{ padding: '3.25rem 2rem 2rem', textAlign: 'center' }}>
+            {/* Name & Specialty */}
+            <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-main)', marginBottom: 4 }}>
+              Dr. {doc.full_name}
+            </h2>
+            <p style={{ fontSize: '0.85rem', color: 'var(--primary)', fontWeight: 600, marginBottom: '1.25rem', textTransform: 'capitalize' }}>
+              {doc.specialty || 'General Veterinarian'}
+            </p>
 
             {/* Stats row */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem', marginBottom: '1.5rem' }}>
@@ -190,33 +197,35 @@ const DoctorModal = ({ doc, onClose, onBook }) => (
                 { icon: <Award size={16} />, label: 'Experience', value: doc.experience_years ? `${doc.experience_years} Years` : 'N/A' },
                 { icon: <MapPin size={16} />, label: 'Location', value: doc.clinic_address?.split(',')[0] || 'Not specified' },
               ].map(({ icon, label, value }) => (
-                <div key={label} style={{ background: '#f8fafc', border: '1px solid var(--border)', borderRadius: 'var(--border-radius-md)', padding: '0.875rem', textAlign: 'center' }}>
-                  <div style={{ display: 'flex', justifyContent: 'center', color: 'var(--primary)', marginBottom: 4 }}>{icon}</div>
-                  <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 2 }}>{label}</p>
-                  <p style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-main)' }}>{value}</p>
+                <div key={label} style={{ background: '#f8fafc', border: '1px solid var(--border)', borderRadius: 12, padding: '0.875rem 0.5rem', textAlign: 'center' }}>
+                  <div style={{ display: 'flex', justifyContent: 'center', color: 'var(--primary)', marginBottom: 6 }}>{icon}</div>
+                  <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 3 }}>{label}</p>
+                  <p style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-main)' }}>{value}</p>
                 </div>
               ))}
             </div>
 
             {/* Bio */}
-            <div style={{ marginBottom: '1.5rem' }}>
-              <p style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.5rem' }}>About</p>
-              <p style={{ fontSize: '0.9rem', color: '#475569', lineHeight: 1.75 }}>
-                {doc.bio || 'No professional biography has been provided yet.'}
-              </p>
-            </div>
+            {doc.bio && (
+              <div style={{ textAlign: 'left', marginBottom: '1.25rem' }}>
+                <p style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: '0.4rem' }}>About</p>
+                <p style={{ fontSize: '0.88rem', color: '#475569', lineHeight: 1.75 }}>
+                  {doc.bio}
+                </p>
+              </div>
+            )}
 
-            {/* Clinic address full */}
+            {/* Clinic address */}
             {doc.clinic_address && (
-              <div style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'flex-start', gap: '0.5rem', padding: '0.875rem', background: 'var(--primary-light)', borderRadius: 'var(--border-radius-md)' }}>
-                <MapPin size={16} style={{ color: 'var(--primary-dark)', flexShrink: 0, marginTop: 2 }} />
-                <p style={{ fontSize: '0.875rem', color: 'var(--primary-dark)', fontWeight: 500 }}>{doc.clinic_address}</p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem 1rem', background: 'var(--primary-light)', borderRadius: 12, marginBottom: '1.25rem', textAlign: 'left' }}>
+                <MapPin size={16} style={{ color: 'var(--primary-dark)', flexShrink: 0 }} />
+                <p style={{ fontSize: '0.85rem', color: 'var(--primary-dark)', fontWeight: 500 }}>{doc.clinic_address}</p>
               </div>
             )}
 
             {/* CTA */}
-            <Button style={{ width: '100%' }} onClick={() => onBook(doc)}>
-              <CalendarIcon size={16} style={{ marginRight: 6 }} />
+            <Button style={{ width: '100%', borderRadius: 12, padding: '0.875rem' }} onClick={() => onBook(doc)}>
+              <CalendarIcon size={16} style={{ marginRight: 8 }} />
               Book an Appointment with Dr. {doc.full_name?.split(' ')[0]}
             </Button>
           </div>
