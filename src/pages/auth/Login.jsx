@@ -19,10 +19,8 @@ const Login = () => {
   const { login, user, profile } = useAuth();
 
   useEffect(() => {
-    if (user && profile) {
-      navigate(profile.role === 'doctor' ? '/doctor-dashboard' : '/dashboard');
-    }
-  }, [user, profile, navigate]);
+    supabase.auth.signOut();
+  }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -49,7 +47,7 @@ const Login = () => {
       }
 
       toast.success('Successfully logged in!');
-      // Navigation handled by useEffect
+      navigate(actualRole === 'doctor' ? '/doctor-dashboard' : '/dashboard');
     } catch (error) {
       toast.error(error.message || 'Failed to sign in');
     } finally {

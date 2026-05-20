@@ -11,7 +11,7 @@ export const appointmentService = {
         pets(name, type, breed, age, image_url),
         doctor:profiles!appointments_doctor_id_fkey(full_name)
       `)
-      .eq('owner_id', user.id)
+      .eq('owner_id', userId)
       .order('date', { ascending: false });
 
     if (error) throw error;

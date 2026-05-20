@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { PawPrint, User, Stethoscope, Loader2, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
+import { supabase } from '../../lib/supabase';
 import Button from '../../components/common/Button';
 import toast from 'react-hot-toast';
 import Logo from '../../components/common/Logo';
@@ -20,10 +21,8 @@ const Register = () => {
   const { signup, user, profile } = useAuth();
 
   useEffect(() => {
-    if (user && profile) {
-      navigate(profile.role === 'doctor' ? '/doctor-dashboard' : '/dashboard');
-    }
-  }, [user, profile, navigate]);
+    supabase.auth.signOut();
+  }, []);
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -32,7 +31,7 @@ const Register = () => {
       const fullName = `${firstName} ${lastName}`.trim();
       await signup(email, password, fullName, role);
       toast.success('Account created successfully! Welcome to Vetocare.');
-      // Navigation handled by useEffect when profile loads
+      navigate(role === 'doctor' ? '/doctor-dashboard' : '/dashboard');
     } catch (error) {
       toast.error(error.message || 'Failed to create account');
     } finally {

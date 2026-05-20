@@ -19,8 +19,9 @@ const Appointments = () => {
   const appointmentsRef = useRef([]);
 
   const loadAppointments = async () => {
+    if (!user) return;
     try {
-      const data = await appointmentService.getAppointments();
+      const data = await appointmentService.getAppointments(user.id);
       setAppointments(data);
       appointmentsRef.current = data;
     } catch (error) {
@@ -31,9 +32,9 @@ const Appointments = () => {
   };
 
   useEffect(() => {
-    loadAppointments();
-
     if (!user) return;
+
+    loadAppointments();
 
     const subscription = supabase
       .channel('owner_appointments')
